@@ -1,0 +1,1 @@
+# aseprite-spritesheet-animation-preview
