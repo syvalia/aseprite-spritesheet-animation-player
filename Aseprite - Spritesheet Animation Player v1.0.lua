@@ -70,7 +70,7 @@ end
 -----------------------------------------------------------------------
 local function stop_animation()
   if timer then timer:stop() end
-  dlg:modify{ id="play", text="Play" }
+  if dlg then dlg:modify{ id="play", text="Play" } end
   is_playing = false
   frame_current = 0
 end
@@ -126,6 +126,12 @@ local function play_animation()
   timer = Timer{
     interval = 1.0 / animation_speed,
     ontick = function()
+      -- Stop animation if Aseprite document is closed
+      if not app.activeSprite then
+        stop_animation()
+        return
+      end
+
       animation_loop = dlg.data["option_animation_loop"]
       animation_pingpong = dlg.data["option_animation_pingpong"]
       animation_vertical = dlg.data["option_animation_vertical"]
@@ -157,7 +163,12 @@ local function create_viewport()
     onpaint = function(ev)
       local gc = ev.context
       spritesheet = app.activeSprite
-      if not spritesheet then app.alert("No active spritesheet found.") end
+
+      -- Stop if Aseprite document is closed
+      if not spritesheet then
+        stop_animation()
+        return
+      end
 
       local dst_width = frame_width * zoom
       local dst_height = frame_height * zoom
@@ -182,7 +193,11 @@ local function create_viewport()
       end
 
       local dstRect = Rectangle(center_x, center_y, dst_width, dst_height)
-      gc:drawImage(Image(spritesheet), srcRect, dstRect)
+
+      -- Draw image only if Aseprite document is open
+      if spritesheet then
+        gc:drawImage(Image(spritesheet), srcRect, dstRect)
+      end
     end,
 
     onwheel = function(ev)
@@ -298,8 +313,20 @@ local function create_viewport()
   }
 
   dlg:show{wait=false}
+
+  -- Stop when Aseprite document is closed
+  app.events:on('sitechange', function()
+    if not app.activeSprite then
+      stop_animation()
+      dlg:modify{ id="play", enabled=false }
+    else
+      dlg:modify{ id="play", enabled=true }
+    end
+    dlg:repaint()
+  end)
 end
 
+-- Checks if Aseprite document is open before running script
 if not app.activeSprite then
   app.alert("No file found. Open an image in Aseprite first!")
   return
