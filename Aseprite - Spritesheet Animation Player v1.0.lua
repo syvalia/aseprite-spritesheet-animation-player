@@ -1,3 +1,7 @@
+-- Aseprite Spritesheet Animation Player v1.0.0
+-- Tested using Aseprite 1.3.15.5-x64 by Igara Studio (Steam build) on a Windows 10 device
+-- Created by Syvalia >> https://github.com/syvalia/aseprite-spritesheet-animation-player/
+
 -- REFERENCES -- 
 local spritesheet
 local dlg
@@ -73,36 +77,28 @@ local function stop_animation()
   if dlg then dlg:modify{ id="play", text="Play" } end
   is_playing = false
   frame_current = 0
+  animation_order = 1
 end
 
-local function update_frame()
+local function update_animation()
+  -- Advance frame
   frame_current = frame_current + animation_order
-end
 
-local function update_direction()
-    if not animation_pingpong then
+  -- Ping-pong
+  if animation_pingpong then
+    if frame_current >= frame_count - 1 then
+      animation_order = -1
+    elseif frame_current <= 0 then
+      if animation_loop then
         animation_order = 1
-        return
+      else
+        stop_animation()
+      end
     end
+    return
+  end
 
-    if animation_pingpong and not animation_loop then
-        if frame_current >= frame_count - 1 then
-            animation_order = -1
-        elseif frame_current <= 0 then
-            stop_animation()
-        end
-    end
-
-    if animation_pingpong and animation_loop then
-        if frame_current >= frame_count - 1 then
-            animation_order = -1
-        elseif frame_current <= 0 then
-            animation_order = 1
-        end
-    end
-end
-
-local function update_loop()
+  -- Loop
   if frame_current >= frame_count then
     if animation_loop then
       frame_current = 0
@@ -136,10 +132,7 @@ local function play_animation()
       animation_pingpong = dlg.data["option_animation_pingpong"]
       animation_vertical = dlg.data["option_animation_vertical"]
 
-      update_direction()
-      update_frame()
-      update_loop()
-
+      update_animation()
       dlg:repaint()
     end
   }
@@ -221,8 +214,7 @@ local function create_viewport()
     text = "|<",
     onclick = function(ev)
       animation_order = -1
-      update_frame()
-      update_loop()
+      update_animation()
       dlg:repaint()
     end
   }
@@ -238,8 +230,7 @@ local function create_viewport()
     text = ">|",
     onclick = function(ev)
       animation_order = 1
-      update_frame()
-      update_loop()
+      update_animation()
       dlg:repaint()
     end
   }
