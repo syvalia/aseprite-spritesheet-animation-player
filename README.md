@@ -7,6 +7,9 @@ This is a basic script useful for creating spritesheets for games that emulate t
 - Tested using Aseprite 1.3.15.5-x64 by Igara Studio (Steam build) on a Windows 10 device
 - Created by [Syvalia](https://syvalia.itch.io/)
 
+## Disclaimer
+This script is set to be visible in public on Github but is intentionally not being distributed or marketed outside of this repository as it is only being shared mostly to known connections for internal use only. While it is being tested and updated mostly on my end, there may be undetected bugs or issues that may break or impact your work on Aseprite depending on the version used. If you happen to find this script through a search engine or similar, I advise you to use it at your own risk especially if you are using versions (older or newer) of Aseprite significantly apart from the version indicated in this above.
+
 ## Installation
 
 1. Download the script from this repository (Aseprite - Spritesheet Animation Player v1.0.lua) which is just a .lua script file used for Aseprite.
