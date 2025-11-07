@@ -256,7 +256,7 @@ local function create_viewport()
   :check{
     id="option_animation_loop",
     text="Loop",
-    selected=true,
+    selected=animation_loop,
     onchange = function(ev) 
         animation_loop = dlg.data["option_animation_loop"] 
     end
@@ -264,7 +264,7 @@ local function create_viewport()
   :check{
     id="option_animation_pingpong",
     text="Ping-Pong",
-    selected=false,
+    selected=animation_pingpong,
     onchange = function(ev) 
         animation_pingpong = dlg.data["option_animation_pingpong"] 
     end
@@ -272,7 +272,7 @@ local function create_viewport()
   :check{
     id="option_animation_vertical",
     text="Vertical",
-    selected=false,
+    selected=animation_vertical,
     onchange = function(ev) 
         animation_vertical = dlg.data["option_animation_vertical"] 
     end
@@ -332,3 +332,4 @@ if not app.activeSprite then
 end
 
 create_viewport()
+
